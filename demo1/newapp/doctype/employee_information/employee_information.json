@@ -1,0 +1,209 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:EI-{MM}-{YYYY}-{###}",
+ "creation": "2025-04-04 11:31:34.572345",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_amc9",
+  "employee",
+  "employee_name",
+  "designation",
+  "date_of_birth",
+  "gender",
+  "column_break_7wpf",
+  "company",
+  "posting_date",
+  "status",
+  "first_hour",
+  "second_hour",
+  "third_hour",
+  "document_details_section",
+  "details",
+  "fetch_details",
+  "documnt_details1_section",
+  "document_details1",
+  "section_break_bqup",
+  "document_details",
+  "additional_details_section",
+  "reference_doctype",
+  "reference_document_name",
+  "approvers",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_amc9",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name"
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Link",
+   "label": "Designation",
+   "options": "Designation"
+  },
+  {
+   "fieldname": "date_of_birth",
+   "fieldtype": "Date",
+   "label": "Date Of Birth"
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Select",
+   "label": "Gender",
+   "options": "\nmale\nfemale\nother"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\ncompleted\npending\nnot started yet"
+  },
+  {
+   "default": "0",
+   "fieldname": "first_hour",
+   "fieldtype": "Int",
+   "label": "First Hour"
+  },
+  {
+   "default": "0",
+   "fieldname": "second_hour",
+   "fieldtype": "Int",
+   "label": "Second Hour"
+  },
+  {
+   "default": "0",
+   "fieldname": "third_hour",
+   "fieldtype": "Int",
+   "label": "Third Hour"
+  },
+  {
+   "fieldname": "document_details_section",
+   "fieldtype": "Section Break",
+   "label": "Document Details"
+  },
+  {
+   "columns": 2,
+   "fieldname": "details",
+   "fieldtype": "Table",
+   "label": "Details",
+   "options": "Document Details"
+  },
+  {
+   "fieldname": "additional_details_section",
+   "fieldtype": "Section Break",
+   "label": "Additional Details"
+  },
+  {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "label": "Reference Doctype",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "reference_document_name",
+   "fieldtype": "Dynamic Link",
+   "label": "Reference Document Name",
+   "options": "reference_doctype"
+  },
+  {
+   "fieldname": "approvers",
+   "fieldtype": "Table MultiSelect",
+   "label": "Approvers",
+   "options": "Approvers"
+  },
+  {
+   "fieldname": "column_break_7wpf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_bqup",
+   "fieldtype": "Section Break"
+  },
+  {
+   "columns": 2,
+   "fieldname": "document_details",
+   "fieldtype": "Table",
+   "label": "Document Details",
+   "options": "Documents"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Employee Information",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "documnt_details1_section",
+   "fieldtype": "Section Break",
+   "label": "Documnt details1"
+  },
+  {
+   "fieldname": "document_details1",
+   "fieldtype": "Table",
+   "label": "Document Details1",
+   "options": "Document Details"
+  },
+  {
+   "fieldname": "fetch_details",
+   "fieldtype": "Button",
+   "label": "Fetch Details"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-04-09 17:37:29.526378",
+ "modified_by": "Administrator",
+ "module": "Newapp",
+ "name": "Employee Information",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

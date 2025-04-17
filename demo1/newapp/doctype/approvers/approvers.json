@@ -1,0 +1,39 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-04-04 12:22:41.496212",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_dxfe",
+  "approvers"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_dxfe",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "approvers",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Approvers",
+   "options": "Employee"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-04-04 12:24:43.109913",
+ "modified_by": "Administrator",
+ "module": "Newapp",
+ "name": "Approvers",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

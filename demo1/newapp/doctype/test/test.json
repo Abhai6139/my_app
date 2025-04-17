@@ -1,0 +1,189 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-04-03 15:55:16.057298",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_lh6c",
+  "employee",
+  "first_name",
+  "last_name",
+  "age",
+  "phone",
+  "email",
+  "column_break_yaxi",
+  "gender",
+  "date_of_birth",
+  "address",
+  "pin",
+  "state",
+  "column_break_sfo9",
+  "education",
+  "specialization",
+  "college",
+  "place",
+  "masters",
+  "document",
+  "section_break_9r3q",
+  "details",
+  "trainers"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_lh6c",
+   "fieldtype": "Section Break"
+  },
+  {
+   "columns": 3,
+   "fetch_from": "employee.first_name",
+   "fieldname": "first_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "First Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "last_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Last Name",
+   "reqd": 1
+  },
+  {
+   "description": "must be greater than 18",
+   "fieldname": "age",
+   "fieldtype": "Int",
+   "label": "Age",
+   "mandatory_depends_on": "eval:doc.gender == 'female'"
+  },
+  {
+   "fieldname": "phone",
+   "fieldtype": "Phone",
+   "label": "Phone"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email"
+  },
+  {
+   "fieldname": "column_break_yaxi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Gender",
+   "options": "\nmale\nfemale\nother"
+  },
+  {
+   "depends_on": "eval:doc.gender == 'male'",
+   "fieldname": "date_of_birth",
+   "fieldtype": "Date",
+   "label": "Date Of Birth"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Long Text",
+   "label": "Address"
+  },
+  {
+   "fieldname": "pin",
+   "fieldtype": "Int",
+   "label": "Pin"
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Data",
+   "label": "State"
+  },
+  {
+   "fieldname": "column_break_sfo9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "education",
+   "fieldtype": "Select",
+   "label": "Education",
+   "options": "\n10/Eq\n+2/Eq\nUG\nPG"
+  },
+  {
+   "fieldname": "specialization",
+   "fieldtype": "Data",
+   "label": "Specialization"
+  },
+  {
+   "fieldname": "college",
+   "fieldtype": "Data",
+   "label": "College"
+  },
+  {
+   "fieldname": "place",
+   "fieldtype": "Data",
+   "label": "Place"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "masters",
+   "fieldtype": "Link",
+   "label": "Masters",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "document",
+   "fieldtype": "Dynamic Link",
+   "label": "Document",
+   "options": "masters"
+  },
+  {
+   "fieldname": "details",
+   "fieldtype": "Table",
+   "label": "Details",
+   "options": "Education Details"
+  },
+  {
+   "fieldname": "section_break_9r3q",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "trainers",
+   "fieldtype": "Table MultiSelect",
+   "label": "Trainers",
+   "options": "Trainers"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-04-04 10:47:39.533102",
+ "modified_by": "Administrator",
+ "module": "Newapp",
+ "name": "Test",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

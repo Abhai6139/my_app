@@ -1,0 +1,52 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-04-04 10:37:32.939132",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_acu9",
+  "course",
+  "duration",
+  "fee"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_acu9",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "course",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Course"
+  },
+  {
+   "fieldname": "duration",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Duration"
+  },
+  {
+   "fieldname": "fee",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Fee"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-04-04 10:41:45.951825",
+ "modified_by": "Administrator",
+ "module": "Newapp",
+ "name": "Education Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
