@@ -1,0 +1,142 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "JOBESTIMN.###",
+ "creation": "2025-06-12 14:33:11.808899",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_bvrd",
+  "job_title",
+  "customer",
+  "estimation_date",
+  "quotation_created",
+  "data_qzod",
+  "total_material_cost",
+  "total_labour_cost",
+  "total_service_cost",
+  "total_cost",
+  "status",
+  "section_break_afr6",
+  "estimation_details",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_bvrd",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "job_title",
+   "fieldtype": "Data",
+   "label": "Job Title"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "default": "Today",
+   "fieldname": "estimation_date",
+   "fieldtype": "Date",
+   "label": "Estimation Date"
+  },
+  {
+   "fieldname": "data_qzod",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_material_cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total Material Cost",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_labour_cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total Labour Cost",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_service_cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total Service Cost",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Status",
+   "options": "\nDraft\nSubmitted\nApproved"
+  },
+  {
+   "fieldname": "section_break_afr6",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "estimation_details",
+   "fieldtype": "Table",
+   "label": "Estimation Details",
+   "options": "Estimation Details"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Job Estimation",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "total_cost",
+   "fieldtype": "Currency",
+   "label": "Total Cost",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "quotation_created",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Quotation Created"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-06-17 10:12:28.336344",
+ "modified_by": "Administrator",
+ "module": "Newapp",
+ "name": "Job Estimation",
+ "naming_rule": "Expression (old style)",
+ "owner": "abhainathp6139@gmail.com",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

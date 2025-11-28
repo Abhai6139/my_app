@@ -1,0 +1,57 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-07-15 17:39:47.695304",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "reference_doctype",
+  "apply_limit",
+  "members"
+ ],
+ "fields": [
+  {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "label": "Reference Doctype",
+   "options": "DocType"
+  },
+  {
+   "default": "0",
+   "fieldname": "apply_limit",
+   "fieldtype": "Check",
+   "label": "Apply Limit"
+  },
+  {
+   "depends_on": "eval:doc.apply_limit==1",
+   "fieldname": "members",
+   "fieldtype": "Int",
+   "label": "Maximum No.of Members in Groups"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-07-15 17:44:13.985940",
+ "modified_by": "Administrator",
+ "module": "Newapp",
+ "name": "Duty Setup",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

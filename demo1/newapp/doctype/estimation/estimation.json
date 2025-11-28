@@ -1,0 +1,155 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-07-24 14:35:25.332468",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_lyvm",
+  "column_break_nfdk",
+  "column_break_qnsd",
+  "opportunity_from",
+  "customer",
+  "section_break_ckjr",
+  "services",
+  "spare_parts",
+  "costing_section",
+  "total_service_cost",
+  "total_spare_parts_cost",
+  "total_cost",
+  "column_break_hblx",
+  "total_selling_amount",
+  "margin_amount",
+  "margin",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_lyvm",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Estimation",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_qnsd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "opportunity_from",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Opportunity From",
+   "options": "DocType",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_nfdk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
+   "label": "Customer",
+   "options": "opportunity_from",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_ckjr",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "services",
+   "fieldtype": "Table",
+   "label": "Services",
+   "options": "Services"
+  },
+  {
+   "fieldname": "spare_parts",
+   "fieldtype": "Table",
+   "label": "Spare Parts",
+   "options": "Spare Parts"
+  },
+  {
+   "fieldname": "costing_section",
+   "fieldtype": "Section Break",
+   "label": "Costing"
+  },
+  {
+   "fieldname": "total_service_cost",
+   "fieldtype": "Currency",
+   "label": "Total Service Cost",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_spare_parts_cost",
+   "fieldtype": "Currency",
+   "label": "Total Spare Parts Cost",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_cost",
+   "fieldtype": "Currency",
+   "label": "Total Cost",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_hblx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_selling_amount",
+   "fieldtype": "Currency",
+   "label": "Total Selling Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "margin_amount",
+   "fieldtype": "Currency",
+   "label": "Margin Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "margin",
+   "fieldtype": "Percent",
+   "label": "Margin",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-07-24 16:19:56.416696",
+ "modified_by": "Administrator",
+ "module": "Newapp",
+ "name": "Estimation",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

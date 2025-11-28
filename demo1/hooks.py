@@ -43,8 +43,25 @@ app_license = "mit"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
-# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
+# doctype_js = {"Sales Invoice" : "public/js/sales_invoice.js"}
+doctype_js = {
+	# "Appraisal Cycle" : "public/js/appraisal.js",
+	"Appraisal Cycle" : "public/js/apraisal.js",
+	"Vehicle":"public/js/vehicle.js",
+	"Item":"public/js/item.js",
+	"Serial No":"public/js/serial.js",
+	"Quotation":"public/js/quotation.js",
+	"Sales Order":"public/js/sales_order.js",
+	"Opportunity":"public/js/opportunity.js",
+	# "Project":"public/js/project.js",
+	"UOM":"public/js/uom.js",
+	"Additional Salary":"public/js/Additional slry.js",
+	"Payroll Entry":"public/js/payroll_entry.js"
+	# "Quick Invoice":"public/js/quick_invoice_list.js"
+}
+doctype_list_js = {
+	"Quick Invoice" : "demo1/newapp/doctype/quick_invoice/quick_invoice_list.js"
+}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
@@ -129,9 +146,11 @@ app_license = "mit"
 # ---------------
 # Override standard doctype classes
 
-# override_doctype_class = {
-# 	"ToDo": "custom_app.overrides.CustomToDo"
-# }
+override_doctype_class = {
+	"Staffing Plan":"demo1.override.staffingpln.Staffingplan"
+# 	# "ToDo": "custom_app.overrides.CustomToDo"
+# 	"Job Requisition":"demo1.override.jobreqisition.CustomJobRequisition"
+}
 
 # Document Events
 # ---------------
@@ -140,29 +159,66 @@ app_license = "mit"
 doc_events = {
 	"Employee": {
         "validate":"demo1.events.employee.validate"
+	},
+	"Job Applicant":{
+		"on_update":'demo1.events.jobapplicnt.on_update',
+		"on_trash":'demo1.events.jobapplicnt.on_trash'
+	},
+	"Purchase Order":{
+		"before_save":"demo1.events.purchs.before_save",
+		# "on_cancel":"demo1.events.purchs.on_cancel",
+	},
+	"Leave Application":{
+		"on_submit":'demo1.events.leave_appli.on_submit',
+		# "on_submit":'demo1.events.job_appli.on_submit'
+	},
+	"Quotation":{
+		"before_validate":"demo1.events.quotation.before_validate"
+	},
+	"Sales Invoice":{
+		"validate":"demo1.events.sales_invoice.validate"
+	},
+	"Salary Structure Assignment":{
+		"validate":"demo1.events.ssa.validate"
 	}
+	# "Project Evaluation": {
+    #     "on_update": "demo1.newapp.doctype.project_evaluation.project_evaluation.on_update",
+    #     "on_submit": "demo1.newapp.doctype.project_evaluation.project_evaluation.on_submit",
+    # }
+	
 }
 
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"demo1.tasks.all"
-# 	],
-# 	"daily": [
-# 		"demo1.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"demo1.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"demo1.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"demo1.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	# "cron": {
+    #     "*/1 * * * *": [
+    #         "demo1.newapp.doctype.library_transaction.test_library_transaction.test"
+    #     ]
+    # },
+	# "all": [
+	# 	"demo1.tasks.all"
+	# ],
+	# "daily": [
+	# 	"demo1.newapp.doctype.library_transaction.library_transaction.test"
+	# ],
+	# "hourly": [
+	# 	"demo1.tasks.hourly"
+	# ],
+	# "weekly": [
+	# 	"demo1.tasks.weekly"
+	# ],
+	# "monthly": [
+	# 	"demo1.tasks.monthly"
+	# ],
+	"cron": {
+        "0 0 * * *": ["demo1.newapp.doctype.duty_allocation.duty_allocation.update_status"]
+    },
+	"daily": [
+		"demo1.newapp.doctype.duty_allocation.duty_allocation.old_delete"
+	],
+}
 
 # Testing
 # -------
@@ -174,6 +230,7 @@ doc_events = {
 #
 # override_whitelisted_methods = {
 # 	"frappe.desk.doctype.event.event.get_events": "demo1.event.get_events"
+
 # }
 #
 # each overriding function accepts a `data` argument;

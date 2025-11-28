@@ -1,0 +1,128 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-08-05 15:49:28.292846",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "material_type",
+  "materials",
+  "_part",
+  "depletion",
+  "unit",
+  "_wastage",
+  "column_break_kxev",
+  "thickness",
+  "qty",
+  "product",
+  "product_name",
+  "mix_design"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "fieldname": "material_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Material Type",
+   "options": "DocType"
+  },
+  {
+   "columns": 1,
+   "fieldname": "materials",
+   "fieldtype": "Dynamic Link",
+   "in_standard_filter": 1,
+   "label": "Materials",
+   "options": "material_type"
+  },
+  {
+   "columns": 1,
+   "fieldname": "_part",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "% Part"
+  },
+  {
+   "columns": 1,
+   "fieldname": "depletion",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Depletion"
+  },
+  {
+   "columns": 1,
+   "fieldname": "unit",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Unit",
+   "options": "UOM"
+  },
+  {
+   "columns": 1,
+   "fieldname": "_wastage",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "% Wastage"
+  },
+  {
+   "fieldname": "column_break_kxev",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 1,
+   "fieldname": "thickness",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Thickness"
+  },
+  {
+   "columns": 1,
+   "fieldname": "qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Qty",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.material_type=='Item Group'",
+   "fieldname": "product",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Product",
+   "mandatory_depends_on": "eval:doc.material_type=='Item Group'",
+   "options": "Item"
+  },
+  {
+   "depends_on": "eval:doc.material_type=='Item Group'",
+   "fetch_from": "product.item_name",
+   "fieldname": "product_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Product Name"
+  },
+  {
+   "columns": 2,
+   "fieldname": "mix_design",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Mix Design",
+   "options": "Mix Design",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-08-08 15:14:37.814852",
+ "modified_by": "Administrator",
+ "module": "Newapp",
+ "name": "BOQ Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

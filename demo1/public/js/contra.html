@@ -1,0 +1,1199 @@
+<h1 class="center bold">Payment Application</h1>
+
+<p><strong>Customer Details</strong></p>
+{% set customer = namespace(address="",name="",del_date="") %}
+
+{% for i in doc.items %}
+    {% if i.sales_order %}
+        {% set so = frappe.get_doc("Sales Order", i.sales_order) %}
+        {% set customer.name = customer.name + so.customer_name + " " %}
+        {% set customer.del_date = customer.del_date + so.delivery_date.strftime("%d-%m-%Y") + " " %}
+
+        
+
+        {% if so.customer_address %}
+            {% set customer.address = customer.address + so.customer_address + " " %}
+            
+        
+
+        {% elif so.customer_name %}
+            
+            
+            {% set link_name = frappe.db.get_value("Dynamic Link", {
+                "link_title": so.customer_name,
+                "link_doctype": "Customer"
+            }, "parent") %}
+
+            {% if link_name %}
+                {% set addr = frappe.get_doc("Address", link_name) %}
+                {% set customer.address = customer.address
+                    + (addr.address_line1 or "") + " "
+                    + (addr.city or "") + " "
+                    + (addr.county or "") + " "
+                %}
+            
+            {% endif %}
+            
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+
+
+
+
+    
+<table class="table table-bordered">
+    <tr>
+        <td colspan="1">
+            <p class="left bold">M/s</p>
+        </td>
+        <td colspan="8">
+            <p class="left bold">{{ customer.name }}</p>
+            {% if  customer.address %}
+                <p class="left">{{ customer.address }}</p>
+            {% else %}
+                <p class="left"></p>
+            {% endif %}
+        </td>
+        <td colspan="3">
+            <p class="right bold">{{ frappe.utils.formatdate(doc.posting_date, "dd-mm-yyyy") }}</p>
+            <p class="right bold">{{ doc.name }}</p>
+        </td>
+    </tr>
+</table>
+
+<table class="table table-bordered">
+    <tr>
+        <td><p>Tax Registration Number:</p></td>
+        <td><p class="bold">100025099100003</p></td>
+    </tr>
+    <tr>
+        <td><p>Description Of Goods /Services :</p></td>
+        <td><p class="bold">Supply And Application Of Screed Works</p></td>
+    </tr>
+    <tr>
+        <td><p>Date of Delivery Of Goods /Services:</p></td>
+        <td><p>{{ frappe.utils.formatdate(customer.del_date, "dd-mm-yyyy") }}</p></td>
+    </tr>
+</table>
+
+<table class="table table-bordered">
+    <tr>
+        <td colspan="6"><p>Project Name/Title:</p></td>
+        <td colspan="6"><p class="bold">{{ frappe.db.get_value("Project", doc.project, "project_name") }}</p></td>
+    </tr>
+    <tr>
+        <td colspan="6"><p>Contract /Agreement No.:</p></td>
+        <td colspan="6"><p class="bold">C-8081/24 dated 02.10.2024</p></td>
+    </tr>
+</table>
+
+<p>Dear Sir/Madam,</p>
+<p>
+    We hereby submit our payment application for the work completed on-site, based on actual measurements and supported by detailed backup documents, in accordance with the agreed contract terms.
+</p>
+
+{% set ns = namespace(total_previous=0, additional_retention=0, pre_contra=0) %}
+{% for i in doc.payment_application_child %}
+    {% set ns.total_previous = ns.total_previous + (i.payment_application_total or 0) %}
+    {% set ns.additional_retention = ns.additional_retention + (i.retention_adjusted_amount or 0) %}
+    {% set ns.pre_contra = ns.pre_contra + (i.contra_amount or 0) %}
+{% endfor %}
+
+{% set so_total = frappe.db.get_value("Sales Order", doc.sales_order, "total") or 0 %}
+{% set actual_retention_percent = frappe.db.get_value("Sales Order", doc.sales_order, "custom_actual_retention_percentage") or 0 %}
+{% set advance_percent = (doc.advance_percentage or 0) / 100 %}
+{% set advance_payment = so_total * advance_percent %}
+{% set advance_recovery_previous = ns.total_previous * advance_percent %}
+{% set advance_recovery_current = (doc.net_total or 0) * advance_percent %}
+{% set retention_diff = (doc.retention_percentage or 0) - actual_retention_percent %}
+{% set retention_add_amount = retention_diff * (doc.total or 0) / 100 %}
+{% set total_contra = ns.pre_contra + (doc.client_contra_charges or 0) %}
+{% set subtotal_2 = (doc.total or 0) + (doc.client_contra_charges or 0) %}
+{% set vat = subtotal_2 * 0.05 %}
+{% set total_amount = subtotal_2 + vat %}
+
+<table class="table table-bordered">
+    <tr>
+        <td class="bold">S.R.No</td>
+        <td class="bold" colspan="4">Particulars</td>
+        <td class="bold" colspan="2"></td>
+        <td class="bold" colspan="2">Previous Claim</td>
+        <td class="bold" colspan="2">Current Month Claim</td>
+        <td class="bold" colspan="2">Total Claim</td>
+    </tr>
+    {% set v = namespace(work_done=0, variation=0, material=0) %}
+
+    {% for i in doc.items %}
+        {% if i.item_code not in ["Retention", "Advance"] %}
+            {% if i.materials_on_site == 1 %}
+                {% set v.material = v.material + (i.amount or 0) %}
+            {% elif i.variations == 1 %}
+                {% set v.variation = v.variation + (i.amount or 0) %}
+            {% elif i.materials_on_site == 0 and i.variations == 0 %}
+                {% set v.work_done = v.work_done + (i.amount or 0) %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+{% set apps = frappe.get_list("Payment Application", {"project": doc.project}, pluck="name") %}
+{% set ls = namespace(work_done=0,variation=0,materials=0,tax_amount=0) %}
+{% set pt = namespace(advance_tax=0, retention=0, received_retention=0, contra=0, vat=0) %}
+
+{% for app_name in apps %}
+    {% if app_name != doc.name %}
+        {% set app_doc = frappe.get_doc("Payment Application", app_name) %}
+        {% for i in app_doc.items %}
+            {% if i.item_code not in ["Retention", "Advance"] %}
+                {% if i.materials_on_site == 0 and i.variations == 0 %}
+                    {% set ls.work_done = ls.work_done + (i.amount or 0) %}
+                {% elif i.variations == 1 %}
+                    {% set ls.variation = ls.variation + (i.amount or 0) %}
+                {% elif i.materials_on_site == 1 %}
+                    {% set ls.materials = ls.materials + (i.amount or 0) %}
+                {% endif %}
+                {% for i in app_doc.taxes %}
+                    {% if i.custom_is_contra ==  0 and i.is_retention == 0 and i.custom_is_contra == 0 and i.custom_is_contra == 0 and i.custom_is_received_retention == 0 %}
+                        {% set pt.vat = pt.vat + (i.tax_amount or 0) %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+
+        {% for i in app_doc.taxes %}
+            {% if i.is_advance == 1 %}
+                {% set pt.advance_tax = pt.advance_tax + (i.tax_amount or 0) %}
+            {% endif %}
+            {% if i.is_retention == 1 %}
+                {% set pt.retention = pt.retention + (i.tax_amount or 0) %}
+            {% endif %}
+            {% if i.custom_is_received_retention == 1 %}
+                {% set pt.received_retention = pt.received_retention + (i.tax_amount or 0) %}
+            {% endif %}
+            {% if i.custom_is_contra == 1 %}
+                {% set pt.contra = pt.contra + (i.tax_amount or 0) %}
+            {% endif %}
+            
+        {% endfor %}
+    {% endif %}
+{% endfor %}
+
+
+   
+
+
+
+   
+
+    <tr>
+        <td>1</td>
+        <td colspan="4">Work Done Value</td>
+        <td colspan="2"></td>
+        <td colspan="2">{{ "{:,.2f}".format(ls.work_done or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(v.work_done or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format((ls.work_done or 0) + (v.work_done or 0)) }}</td>
+    </tr>
+    
+    <tr>
+        <td>2</td>
+        <td colspan="4">Variations</td>
+        <td colspan="2" colspan="6"></td>
+          <td colspan="2">{{ "{:,.2f}".format(ls.variation or 0) }}</td>
+            <td colspan="2">{{ "{:,.2f}".format(v.variation or 0) }}</td>
+              <td colspan="2">{{ "{:,.2f}".format((ls.variation or 0) + (v.variation or 0)) }}</td>
+    </tr>
+    
+    <tr>
+        <td>3</td>
+        <td colspan="4">Materials On Site</td>
+        <td colspan="2" colspan="6"></td>
+          <td colspan="2">{{ "{:,.2f}".format(ls.materials or 0) }}</td>
+            <td colspan="2">{{ "{:,.2f}".format(v.material or 0) }}</td>
+              <td colspan="2">{{ "{:,.2f}".format((ls.materials or 0) + (v.material or 0)) }}</td>
+    </tr>
+    {% set st = namespace( sub_total_1 = (v.work_done or 0) + (v.variation or 0) + (v.material or 0)) %}
+    {% set pst = namespace( sub_total_1 = (ls.work_done or 0) + (ls.variation or 0) + (ls.materials or 0)) %}
+    <tr>
+        <td>4</td>
+        <td colspan="4">Sub Total-1</td>
+        <td colspan="2"></td>
+        <td colspan="2">{{ "{:,.2f}".format(pst.sub_total_1) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(st.sub_total_1) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(pst.sub_total_1 + (st.sub_total_1 or 0)) }}</td>
+    </tr>
+        {% set ad = namespace(
+            advance_payment_total = 0,
+            current_so = None,
+            all_same_so = True,
+            unique_count = 0,
+            last_advance_payment = 0
+        ) %}
+        {% for i in doc.items %}
+            {% if i.sales_order %}
+                {% if not ad.current_so %}
+                    {% set ad.current_so = i.sales_order %}
+                {% elif ad.current_so != i.sales_order %}
+                    {% set ad.all_same_so = False %}
+                {% endif %}
+        
+                {% set so_total = frappe.db.get_value("Sales Order", i.sales_order, "total") or 0 %}
+                {% set advance_percent = frappe.db.get_value("Sales Order", i.sales_order, "advance_percentage") or 0 %}
+                {% set advance_payment = so_total * (advance_percent / 100) %}
+                {% set ad.advance_payment_total = ad.advance_payment_total + advance_payment %}
+        
+                {% set ad.last_advance_payment = advance_payment %}
+            {% endif %}
+        {% endfor %}
+
+
+    
+   <tr>
+    <td>5</td>
+    <td colspan="4">Advance Payment</td>
+    <td colspan="2"></td>
+    <td colspan="2"></td>
+
+    {% if ad.all_same_so %}
+        <td colspan="2">{{ "{:,.2f}".format(ad.last_advance_payment) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(ad.last_advance_payment) }}</td>
+    {% else %}
+        <td colspan="2">{{ "{:,.2f}".format(ad.advance_payment_total) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(ad.advance_payment_total) }}</td>
+    {% endif %}
+
+</tr>
+    {% set t = namespace(advance_tax=0, retention=0, received_retention=0, contra=0, vat=0) %}
+    
+    {% for i in doc.taxes %}
+        {% if i.is_advance == 1 %}
+            {% set t.advance_tax = t.advance_tax + (i.tax_amount or 0) %}
+        {% endif %}
+        {% if i.is_retention == 1 %}
+            {% set t.retention = t.retention + (i.tax_amount or 0) %}
+        {% endif %}
+        {% if i.custom_is_received_retention == 1 %}
+            {% set t.received_retention = t.received_retention + (i.tax_amount or 0) %}
+        {% endif %}
+        {% if i.custom_is_contra == 1 %}
+            {% set t.contra = t.contra + (i.tax_amount or 0) %}
+        {% endif %}
+        {% if i.custom_is_contra ==  0 and i.is_retention == 0 and i.custom_is_contra == 0 and i.custom_is_contra == 0 and i.custom_is_received_retention == 0 %}
+                {% set t.vat = t.vat + (i.tax_amount or 0) %}
+        {% endif %}
+    {% endfor %}
+
+
+    <tr>
+        <td>6</td>
+        <td colspan="4">Less: Advance Payment Recovery</td>
+        <td colspan="2">{{ "%.2f"|format(doc.advance_percentage  or 0)|int }}%</td>
+        <td colspan="2">{{ "{:,.2f}".format(-pt.advance_tax or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(-t.advance_tax or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format((-pt.advance_tax or 0) + (-t.advance_tax or 0)) }}</td>
+    </tr>
+    
+    <tr>
+        <td>7</td>
+        <td colspan="4">Less: Retention</td>
+        <td colspan="2">{{ actual_retention_percent |int}}%</td>
+        <td colspan="2">{{ "{:,.2f}".format(-pt.retention or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(-t.retention or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format((-pt.retention or 0) + (-t.retention or 0)) }}</td>
+    </tr>
+    
+    <tr>
+        <td>8</td>
+        <td colspan="4">Add: Retention</td>
+        <td colspan="2">{{ "%.2f"|format(doc.received_retention_rate)|int }}%</td>
+        <td colspan="2">{{ "{:,.2f}".format(pt.received_retention or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(t.received_retention or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(pt.received_retention or 0 + t.received_retention or 0) }}</td>
+    </tr>
+    
+
+    
+    <tr>
+        <td>9</td>
+        <td colspan="4">Less: Deductions/Contra Charges</td>
+        <td colspan="2"></td>
+        <td colspan="2">{{ "{:,.2f}".format(pt.contra or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(t.contra or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(pt.contra + t.contra) }}</td>
+    </tr>
+    {% if ad.all_same_so %}
+        {% set advance_payment_used = ad.last_advance_payment %}
+    {% else %}
+        {% set advance_payment_used = ad.advance_payment_total %}
+    {% endif %}
+    
+    {% set ts = namespace(
+        sub_total_2 = st.sub_total_1 
+                     + (advance_payment_used or 0)
+                     + (-t.advance_tax or 0)
+                     + (-t.retention or 0)
+                     + (t.received_retention or 0)
+                     + (t.contra or 0)
+    ) %}
+    {% set pts = namespace(
+        sub_total_2 = pst.sub_total_1 
+                    
+                     + (-pt.advance_tax or 0)
+                     + (-pt.retention or 0)
+                     + (pt.received_retention or 0)
+                     + (pt.contra or 0)
+    ) %}
+
+    <tr>
+        <td>10</td>
+        <td colspan="4">Sub Total-2</td>
+        <td colspan="2"></td>
+        <td colspan="2">{{ "{:,.2f}".format(pts.sub_total_2) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(ts.sub_total_2) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(pts.sub_total_2 + ts.sub_total_2) }}</td>
+    </tr>
+    {% set a = namespace(vat=0) %}
+        {% for i in doc.taxes %}
+            
+        {% endfor %}
+    <tr>
+        <td>11</td>
+        <td colspan="4">Add: VAT</td>
+        <td colspan="2"></td>
+        <td colspan="2">{{ "{:,.2f}".format(-pt.vat or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(-t.vat or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format((-pt.vat or 0) + (-t.vat or 0) )}}</td>
+    </tr>
+    {% set ta = namespace(total = (ts.sub_total_2 or 0)+ (-t.vat or 0) )%}
+    {% set amt = namespace(total = (pts.sub_total_2 or 0)+ (-pt.vat or 0) )%}
+    <tr>
+        <td>12</td>
+        <td colspan="4">Total Amount</td>
+        <td colspan="2"></td>
+        <td colspan="2">{{ "{:,.2f}".format(amt.total) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(ta.total) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(amt.total + ta.total) }}</td>
+    </tr>
+</table>
+
+<p class="bold">Amount in words: {{ frappe.utils.money_in_words(ta.total or 0) }}</p>
+<br/>
+<p>This is for your kind approval and further proceedings.</p>
+<p>For And Behalf Of,</p>
+<p class="bold">M/s GCS German Concrete Works and Building Contracting L.L.C</p>
+<br>
+<div style="padding-left:10px">
+    <p>PO Box. 29030</p>
+    <p>Dubai, UAE</p>
+    <p>Tel: +971 4 884 7454, Fax: +971 4 884 7545</p>
+    <p>Tax Registration Number: 100253830200003</p>
+</div>
+
+
+<!-- 
+
+
+<h1 class="center bold">Payment Application</h1>
+
+<p><strong>Customer Details</strong></p>
+{% set customer = namespace(address="",name="",del_date="") %}
+
+{% for i in doc.items %}
+    {% if i.sales_order %}
+        {% set so = frappe.get_doc("Sales Order", i.sales_order) %}
+        {% set customer.name = customer.name + so.customer_name + " " %}
+        {% set customer.del_date = customer.del_date + so.delivery_date.strftime("%d-%m-%Y") + " " %}
+
+        
+
+        {% if so.customer_address %}
+            {% set customer.address = customer.address + so.customer_address + " " %}
+            
+        
+
+        {% elif so.customer_name %}
+            
+            
+            {% set link_name = frappe.db.get_value("Dynamic Link", {
+                "link_title": so.customer_name,
+                "link_doctype": "Customer"
+            }, "parent") %}
+
+            {% if link_name %}
+                {% set addr = frappe.get_doc("Address", link_name) %}
+                {% set customer.address = customer.address
+                    + (addr.address_line1 or "") + " "
+                    + (addr.city or "") + " "
+                    + (addr.county or "") + " "
+                %}
+            
+            {% endif %}
+            
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+
+
+
+
+    
+<table class="table table-bordered">
+    <tr>
+        <td colspan="1">
+            <p class="left bold">M/s</p>
+        </td>
+        <td colspan="8">
+            <p class="left bold">{{ customer.name }}</p>
+            {% if  customer.address %}
+                <p class="left">{{ customer.address }}</p>
+            {% else %}
+                <p class="left"></p>
+            {% endif %}
+        </td>
+        <td colspan="3">
+            <p class="right bold">{{ frappe.utils.formatdate(doc.posting_date, "dd-mm-yyyy") }}</p>
+            <p class="right bold">{{ doc.name }}</p>
+        </td>
+    </tr>
+</table>
+
+<table class="table table-bordered">
+    <tr>
+        <td><p>Tax Registration Number:</p></td>
+        <td><p class="bold">100025099100003</p></td>
+    </tr>
+    <tr>
+        <td><p>Description Of Goods /Services :</p></td>
+        <td><p class="bold">Supply And Application Of Screed Works</p></td>
+    </tr>
+    <tr>
+        <td><p>Date of Delivery Of Goods /Services:</p></td>
+        <td><p>{{ frappe.utils.formatdate(customer.del_date, "dd-mm-yyyy") }}</p></td>
+    </tr>
+</table>
+
+<table class="table table-bordered">
+    <tr>
+        <td colspan="6"><p>Project Name/Title:</p></td>
+        <td colspan="6"><p class="bold">{{ frappe.db.get_value("Project", doc.project, "project_name") }}</p></td>
+    </tr>
+    <tr>
+        <td colspan="6"><p>Contract /Agreement No.:</p></td>
+        <td colspan="6"><p class="bold">C-8081/24 dated 02.10.2024</p></td>
+    </tr>
+</table>
+
+<p>Dear Sir/Madam,</p>
+<p>
+    We hereby submit our payment application for the work completed on-site, based on actual measurements and supported by detailed backup documents, in accordance with the agreed contract terms.
+</p>
+
+{% set ns = namespace(total_previous=0, additional_retention=0, pre_contra=0) %}
+{% for i in doc.payment_application_child %}
+    {% set ns.total_previous = ns.total_previous + (i.payment_application_total or 0) %}
+    {% set ns.additional_retention = ns.additional_retention + (i.retention_adjusted_amount or 0) %}
+    {% set ns.pre_contra = ns.pre_contra + (i.contra_amount or 0) %}
+{% endfor %}
+
+{% set so_total = frappe.db.get_value("Sales Order", doc.sales_order, "total") or 0 %}
+{% set actual_retention_percent = frappe.db.get_value("Sales Order", doc.sales_order, "custom_actual_retention_percentage") or 0 %}
+{% set advance_percent = (doc.advance_percentage or 0) / 100 %}
+{% set advance_payment = so_total * advance_percent %}
+{% set advance_recovery_previous = ns.total_previous * advance_percent %}
+{% set advance_recovery_current = (doc.net_total or 0) * advance_percent %}
+{% set retention_diff = (doc.retention_percentage or 0) - actual_retention_percent %}
+{% set retention_add_amount = retention_diff * (doc.total or 0) / 100 %}
+{% set total_contra = ns.pre_contra + (doc.client_contra_charges or 0) %}
+{% set subtotal_2 = (doc.total or 0) + (doc.client_contra_charges or 0) %}
+{% set vat = subtotal_2 * 0.05 %}
+{% set total_amount = subtotal_2 + vat %}
+
+<table class="table table-bordered">
+    <tr>
+        <td class="bold">S.R.No</td>
+        <td class="bold" colspan="4">Particulars</td>
+        <td class="bold" colspan="2"></td>
+        <td class="bold" colspan="2">Previous Claim</td>
+        <td class="bold" colspan="2">Current Month Claim</td>
+        <td class="bold" colspan="2">Total Claim</td>
+    </tr>
+    {% set v = namespace(work_done=0, variation=0, material=0) %}
+
+    {% for i in doc.items %}
+        {% if i.item_code not in ["Retention", "Advance"] %}
+            {% if i.materials_on_site == 1 %}
+                {% set v.material = v.material + (i.amount or 0) %}
+            {% elif i.variations == 1 %}
+                {% set v.variation = v.variation + (i.amount or 0) %}
+            {% elif i.materials_on_site == 0 and i.variations == 0 %}
+                {% set v.work_done = v.work_done + (i.amount or 0) %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+{% set apps = frappe.get_list("Payment Application", {"project": doc.project}, pluck="name") %}
+{% set ls = namespace(work_done=0,variation=0,materials=0,tax_amount=0) %}
+{% set pt = namespace(advance_tax=0, retention=0, received_retention=0, contra=0, vat=0) %}
+
+{% for app_name in apps %}
+    {% if app_name != doc.name %}
+        {% set app_doc = frappe.get_doc("Payment Application", app_name) %}
+        {% for i in app_doc.items %}
+            {% if i.item_code not in ["Retention", "Advance"] %}
+                {% if i.materials_on_site == 0 and i.variations == 0 %}
+                    {% set ls.work_done = ls.work_done + (i.amount or 0) %}
+                {% elif i.variations == 1 %}
+                    {% set ls.variation = ls.variation + (i.amount or 0) %}
+                {% elif i.materials_on_site == 1 %}
+                    {% set ls.materials = ls.materials + (i.amount or 0) %}
+                {% endif %}
+                {% for i in app_doc.taxes %}
+                    {% if i.custom_is_contra ==  0 and i.is_retention == 0 and i.custom_is_contra == 0 and i.custom_is_contra == 0 and i.custom_is_received_retention == 0 %}
+                        {% set pt.vat = pt.vat + (i.tax_amount or 0) %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+
+        {% for i in app_doc.taxes %}
+            {% if i.is_advance == 1 %}
+                {% set pt.advance_tax = pt.advance_tax + (i.tax_amount or 0) %}
+            {% endif %}
+            {% if i.is_retention == 1 %}
+                {% set pt.retention = pt.retention + (i.tax_amount or 0) %}
+            {% endif %}
+            {% if i.custom_is_received_retention == 1 %}
+                {% set pt.received_retention = pt.received_retention + (i.tax_amount or 0) %}
+            {% endif %}
+            {% if i.custom_is_contra == 1 %}
+                {% set pt.contra = pt.contra + (i.tax_amount or 0) %}
+            {% endif %}
+            
+        {% endfor %}
+    {% endif %}
+{% endfor %}
+
+
+   
+
+
+
+   
+
+    <tr>
+        <td>1</td>
+        <td colspan="4">Work Done Value</td>
+        <td colspan="2"></td>
+        <td colspan="2">{{ "{:,.2f}".format(ls.work_done or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(v.work_done or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format((ls.work_done or 0) + (v.work_done or 0)) }}</td>
+    </tr>
+    
+    <tr>
+        <td>2</td>
+        <td colspan="4">Variations</td>
+        <td colspan="2" colspan="6"></td>
+          <td colspan="2">{{ "{:,.2f}".format(ls.variation or 0) }}</td>
+            <td colspan="2">{{ "{:,.2f}".format(v.variation or 0) }}</td>
+              <td colspan="2">{{ "{:,.2f}".format((ls.variation or 0) + (v.variation or 0)) }}</td>
+    </tr>
+    
+    <tr>
+        <td>3</td>
+        <td colspan="4">Materials On Site</td>
+        <td colspan="2" colspan="6"></td>
+          <td colspan="2">{{ "{:,.2f}".format(ls.materials or 0) }}</td>
+            <td colspan="2">{{ "{:,.2f}".format(v.material or 0) }}</td>
+              <td colspan="2">{{ "{:,.2f}".format((ls.materials or 0) + (v.material or 0)) }}</td>
+    </tr>
+    {% set st = namespace( sub_total_1 = (v.work_done or 0) + (v.variation or 0) + (v.material or 0)) %}
+    {% set pst = namespace( sub_total_1 = (ls.work_done or 0) + (ls.variation or 0) + (ls.materials or 0)) %}
+    <tr>
+        <td>4</td>
+        <td colspan="4">Sub Total-1</td>
+        <td colspan="2"></td>
+        <td colspan="2">{{ "{:,.2f}".format(pst.sub_total_1) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(st.sub_total_1) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(pst.sub_total_1 + (st.sub_total_1 or 0)) }}</td>
+    </tr>
+        {% set ad = namespace(
+            advance_payment_total = 0,
+            current_so = None,
+            all_same_so = True,
+            unique_count = 0,
+            last_advance_payment = 0
+        ) %}
+        {% for i in doc.items %}
+            {% if i.sales_order %}
+                {% if not ad.current_so %}
+                    {% set ad.current_so = i.sales_order %}
+                {% elif ad.current_so != i.sales_order %}
+                    {% set ad.all_same_so = False %}
+                {% endif %}
+        
+                {% set so_total = frappe.db.get_value("Sales Order", i.sales_order, "total") or 0 %}
+                {% set advance_percent = frappe.db.get_value("Sales Order", i.sales_order, "advance_percentage") or 0 %}
+                {% set advance_payment = so_total * (advance_percent / 100) %}
+                {% set ad.advance_payment_total = ad.advance_payment_total + advance_payment %}
+        
+                {% set ad.last_advance_payment = advance_payment %}
+            {% endif %}
+        {% endfor %}
+
+
+    
+   <tr>
+    <td>5</td>
+    <td colspan="4">Advance Payment</td>
+    <td colspan="2"></td>
+    <td colspan="2"></td>
+
+    {% if ad.all_same_so %}
+        <td colspan="2">{{ "{:,.2f}".format(ad.last_advance_payment) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(ad.last_advance_payment) }}</td>
+    {% else %}
+        <td colspan="2">{{ "{:,.2f}".format(ad.advance_payment_total) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(ad.advance_payment_total) }}</td>
+    {% endif %}
+
+</tr>
+    {% set t = namespace(advance_tax=0, retention=0, received_retention=0, contra=0, vat=0) %}
+    
+    {% for i in doc.taxes %}
+        {% if i.is_advance == 1 %}
+            {% set t.advance_tax = t.advance_tax + (i.tax_amount or 0) %}
+        {% endif %}
+        {% if i.is_retention == 1 %}
+            {% set t.retention = t.retention + (i.tax_amount or 0) %}
+        {% endif %}
+        {% if i.custom_is_received_retention == 1 %}
+            {% set t.received_retention = t.received_retention + (i.tax_amount or 0) %}
+        {% endif %}
+        {% if i.custom_is_contra == 1 %}
+            {% set t.contra = t.contra + (i.tax_amount or 0) %}
+        {% endif %}
+        {% if i.custom_is_contra ==  0 and i.is_retention == 0 and i.custom_is_contra == 0 and i.custom_is_contra == 0 and i.custom_is_received_retention == 0 %}
+                {% set t.vat = t.vat + (i.tax_amount or 0) %}
+        {% endif %}
+    
+
+
+    <tr>
+        <td>6</td>
+        <td colspan="4">Less: Advance Payment Recovery</td>
+        {%if i.is_advance%}
+        <td colspan="2">{{ "%.2f"|format(i.rate  or 0)|int }}%</td>
+        {%else%}
+        <td colspan="2"></td>
+        {%endif%}
+        <td colspan="2">{{ "{:,.2f}".format(-pt.advance_tax or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(-t.advance_tax or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format((-pt.advance_tax or 0) + (-t.advance_tax or 0)) }}</td>
+    </tr>
+    
+    <tr>
+        <td>7</td>
+        <td colspan="4">Less: Retention</td>
+        {%if i.is_retention%}
+        <td colspan="2">{{ "%.2f"|format(i.rate  or 0)|int }}%</td>
+        {%else%}
+        <td colspan="2"></td>
+        {%endif%}
+        <td colspan="2">{{ "{:,.2f}".format(-pt.retention or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(-t.retention or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format((-pt.retention or 0) + (-t.retention or 0)) }}</td>
+    </tr>
+    
+    <tr>
+        <td>8</td>
+        <td colspan="4">Add: Retention</td>
+        <td colspan="2">{{ "%.2f"|format(doc.received_retention_rate)|int }}%</td>
+        <td colspan="2">{{ "{:,.2f}".format(pt.received_retention or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(t.received_retention or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(pt.received_retention or 0 + t.received_retention or 0) }}</td>
+    </tr>
+    
+
+    
+    <tr>
+        <td>9</td>
+        <td colspan="4">Less: Deductions/Contra Charges</td>
+        <td colspan="2"></td>
+        <td colspan="2">{{ "{:,.2f}".format(pt.contra or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(t.contra or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(pt.contra + t.contra) }}</td>
+    </tr>
+    {% endfor %}
+    {% if ad.all_same_so %}
+        {% set advance_payment_used = ad.last_advance_payment %}
+    {% else %}
+        {% set advance_payment_used = ad.advance_payment_total %}
+    {% endif %}
+    
+    {% set ts = namespace(
+        sub_total_2 = st.sub_total_1 
+                     + (advance_payment_used or 0)
+                     + (-t.advance_tax or 0)
+                     + (-t.retention or 0)
+                     + (t.received_retention or 0)
+                     + (t.contra or 0)
+    ) %}
+    {% set pts = namespace(
+        sub_total_2 = pst.sub_total_1 
+                    
+                     + (-pt.advance_tax or 0)
+                     + (-pt.retention or 0)
+                     + (pt.received_retention or 0)
+                     + (pt.contra or 0)
+    ) %}
+
+    <tr>
+        <td>10</td>
+        <td colspan="4">Sub Total-2</td>
+        <td colspan="2"></td>
+        <td colspan="2">{{ "{:,.2f}".format(pts.sub_total_2) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(ts.sub_total_2) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(pts.sub_total_2 + ts.sub_total_2) }}</td>
+    </tr>
+    {% set a = namespace(vat=0) %}
+        {% for i in doc.taxes %}
+            
+        {% endfor %}
+    <tr>
+        <td>11</td>
+        <td colspan="4">Add: VAT</td>
+        <td colspan="2"></td>
+        <td colspan="2">{{ "{:,.2f}".format(-pt.vat or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(-t.vat or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format((-pt.vat or 0) + (-t.vat or 0) )}}</td>
+    </tr>
+    {% set ta = namespace(total = (ts.sub_total_2 or 0)+ (-t.vat or 0) )%}
+    {% set amt = namespace(total = (pts.sub_total_2 or 0)+ (-pt.vat or 0) )%}
+    <tr>
+        <td>12</td>
+        <td colspan="4">Total Amount</td>
+        <td colspan="2"></td>
+        <td colspan="2">{{ "{:,.2f}".format(amt.total) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(ta.total) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(amt.total + ta.total) }}</td>
+    </tr>
+</table>
+
+<p class="bold">Amount in words: {{ frappe.utils.money_in_words(ta.total or 0) }}</p>
+<br/>
+<p>This is for your kind approval and further proceedings.</p>
+<p>For And Behalf Of,</p>
+<p class="bold">M/s GCS German Concrete Works and Building Contracting L.L.C</p>
+<br>
+<div style="padding-left:10px">
+    <p>PO Box. 29030</p>
+    <p>Dubai, UAE</p>
+    <p>Tel: +971 4 884 7454, Fax: +971 4 884 7545</p>
+    <p>Tax Registration Number: 100253830200003</p>
+</div> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h1 class="center bold">Payment Application</h1>
+
+<p><strong>Customer Details</strong></p>
+{% set customer = namespace(address="",name="",del_date="") %}
+
+{% for i in doc.items %}
+    {% if i.sales_order %}
+        {% set so = frappe.get_doc("Sales Order", i.sales_order) %}
+        {% set customer.name = customer.name + so.customer_name + " " %}
+        {% set customer.del_date = customer.del_date + so.delivery_date.strftime("%d-%m-%Y") + " " %}
+
+        
+
+        {% if so.customer_address %}
+            {% set customer.address = customer.address + so.customer_address + " " %}
+            
+        
+
+        {% elif so.customer_name %}
+            
+            
+            {% set link_name = frappe.db.get_value("Dynamic Link", {
+                "link_title": so.customer_name,
+                "link_doctype": "Customer"
+            }, "parent") %}
+
+            {% if link_name %}
+                {% set addr = frappe.get_doc("Address", link_name) %}
+                {% set customer.address = customer.address
+                    + (addr.address_line1 or "") + " "
+                    + (addr.city or "") + " "
+                    + (addr.county or "") + " "
+                %}
+            
+            {% endif %}
+            
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+
+
+
+
+    
+<table class="table table-bordered">
+    <tr>
+        <td colspan="1">
+            <p class="left bold">M/s</p>
+        </td>
+        <td colspan="8">
+            <p class="left bold">{{ customer.name }}</p>
+            {% if  customer.address %}
+                <p class="left">{{ customer.address }}</p>
+            {% else %}
+                <p class="left"></p>
+            {% endif %}
+        </td>
+        <td colspan="3">
+            <p class="right bold">{{ frappe.utils.formatdate(doc.posting_date, "dd-mm-yyyy") }}</p>
+            <p class="right bold">{{ doc.name }}</p>
+        </td>
+    </tr>
+</table>
+
+<table class="table table-bordered">
+    <tr>
+        <td><p>Tax Registration Number:</p></td>
+        <td><p class="bold">100025099100003</p></td>
+    </tr>
+    <tr>
+        <td><p>Description Of Goods /Services :</p></td>
+        <td><p class="bold">Supply And Application Of Screed Works</p></td>
+    </tr>
+    <tr>
+        <td><p>Date of Delivery Of Goods /Services:</p></td>
+        <td><p>{{ frappe.utils.formatdate(customer.del_date, "dd-mm-yyyy") }}</p></td>
+    </tr>
+</table>
+
+<table class="table table-bordered">
+    <tr>
+        <td colspan="6"><p>Project Name/Title:</p></td>
+        <td colspan="6"><p class="bold">{{ frappe.db.get_value("Project", doc.project, "project_name") }}</p></td>
+    </tr>
+    <tr>
+        <td colspan="6"><p>Contract /Agreement No.:</p></td>
+        <td colspan="6"><p class="bold">C-8081/24 dated 02.10.2024</p></td>
+    </tr>
+</table>
+
+<p>Dear Sir/Madam,</p>
+<p>
+    We hereby submit our payment application for the work completed on-site, based on actual measurements and supported by detailed backup documents, in accordance with the agreed contract terms.
+</p>
+
+{% set ns = namespace(total_previous=0, additional_retention=0, pre_contra=0) %}
+{% for i in doc.payment_application_child %}
+    {% set ns.total_previous = ns.total_previous + (i.payment_application_total or 0) %}
+    {% set ns.additional_retention = ns.additional_retention + (i.retention_adjusted_amount or 0) %}
+    {% set ns.pre_contra = ns.pre_contra + (i.contra_amount or 0) %}
+{% endfor %}
+
+{% set so_total = frappe.db.get_value("Sales Order", doc.sales_order, "total") or 0 %}
+{% set actual_retention_percent = frappe.db.get_value("Sales Order", doc.sales_order, "custom_actual_retention_percentage") or 0 %}
+{% set advance_percent = (doc.advance_percentage or 0) / 100 %}
+{% set advance_payment = so_total * advance_percent %}
+{% set advance_recovery_previous = ns.total_previous * advance_percent %}
+{% set advance_recovery_current = (doc.net_total or 0) * advance_percent %}
+{% set retention_diff = (doc.retention_percentage or 0) - actual_retention_percent %}
+{% set retention_add_amount = retention_diff * (doc.total or 0) / 100 %}
+{% set total_contra = ns.pre_contra + (doc.client_contra_charges or 0) %}
+{% set subtotal_2 = (doc.total or 0) + (doc.client_contra_charges or 0) %}
+{% set vat = subtotal_2 * 0.05 %}
+{% set total_amount = subtotal_2 + vat %}
+
+<table class="table table-bordered">
+    <tr>
+        <td class="bold">S.R.No</td>
+        <td class="bold" colspan="4">Particulars</td>
+        <td class="bold" colspan="2"></td>
+        <td class="bold" colspan="2">Previous Claim</td>
+        <td class="bold" colspan="2">Current Month Claim</td>
+        <td class="bold" colspan="2">Total Claim</td>
+    </tr>
+    {% set v = namespace(work_done=0, variation=0, material=0) %}
+
+    {% for i in doc.items %}
+        {% if i.item_code not in ["Retention", "Advance"] %}
+            {% if i.materials_on_site == 1 %}
+                {% set v.material = v.material + (i.amount or 0) %}
+            {% elif i.variations == 1 %}
+                {% set v.variation = v.variation + (i.amount or 0) %}
+            {% elif i.materials_on_site == 0 and i.variations == 0 %}
+                {% set v.work_done = v.work_done + (i.amount or 0) %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+{% set apps = frappe.get_list("Payment Application", {"project": doc.project}, pluck="name") %}
+{% set ls = namespace(work_done=0,variation=0,materials=0,tax_amount=0) %}
+{% set pt = namespace(advance_tax=0, retention=0, received_retention=0, contra=0, vat=0) %}
+
+{% for app_name in apps %}
+    {% if app_name != doc.name %}
+        {% set app_doc = frappe.get_doc("Payment Application", app_name) %}
+        {% for i in app_doc.items %}
+            {% if i.item_code not in ["Retention", "Advance"] %}
+                {% if i.materials_on_site == 0 and i.variations == 0 %}
+                    {% set ls.work_done = ls.work_done + (i.amount or 0) %}
+                {% elif i.variations == 1 %}
+                    {% set ls.variation = ls.variation + (i.amount or 0) %}
+                {% elif i.materials_on_site == 1 %}
+                    {% set ls.materials = ls.materials + (i.amount or 0) %}
+                {% endif %}
+                {% for i in app_doc.taxes %}
+                    {% if i.custom_is_contra ==  0 and i.is_retention == 0 and i.custom_is_contra == 0 and i.custom_is_contra == 0 and i.custom_is_received_retention == 0 %}
+                        {% set pt.vat = pt.vat + (i.tax_amount or 0) %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+
+        {% for i in app_doc.taxes %}
+            {% if i.is_advance == 1 %}
+                {% set pt.advance_tax = pt.advance_tax + (i.tax_amount or 0) %}
+            {% endif %}
+            {% if i.is_retention == 1 %}
+                {% set pt.retention = pt.retention + (i.tax_amount or 0) %}
+            {% endif %}
+            {% if i.custom_is_received_retention == 1 %}
+                {% set pt.received_retention = pt.received_retention + (i.tax_amount or 0) %}
+            {% endif %}
+            {% if i.custom_is_contra == 1 %}
+                {% set pt.contra = pt.contra + (i.tax_amount or 0) %}
+            {% endif %}
+            
+        {% endfor %}
+    {% endif %}
+{% endfor %}
+
+
+   
+
+
+
+   
+
+    <tr>
+        <td>1</td>
+        <td colspan="4">Work Done Value</td>
+        <td colspan="2"></td>
+        <td colspan="2">{{ "{:,.2f}".format(ls.work_done or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(v.work_done or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format((ls.work_done or 0) + (v.work_done or 0)) }}</td>
+    </tr>
+    
+    <tr>
+        <td>2</td>
+        <td colspan="4">Variations</td>
+        <td colspan="2" colspan="6"></td>
+          <td colspan="2">{{ "{:,.2f}".format(ls.variation or 0) }}</td>
+            <td colspan="2">{{ "{:,.2f}".format(v.variation or 0) }}</td>
+              <td colspan="2">{{ "{:,.2f}".format((ls.variation or 0) + (v.variation or 0)) }}</td>
+    </tr>
+    
+    <tr>
+        <td>3</td>
+        <td colspan="4">Materials On Site</td>
+        <td colspan="2" colspan="6"></td>
+          <td colspan="2">{{ "{:,.2f}".format(ls.materials or 0) }}</td>
+            <td colspan="2">{{ "{:,.2f}".format(v.material or 0) }}</td>
+              <td colspan="2">{{ "{:,.2f}".format((ls.materials or 0) + (v.material or 0)) }}</td>
+    </tr>
+    {% set st = namespace( sub_total_1 = (v.work_done or 0) + (v.variation or 0) + (v.material or 0)) %}
+    {% set pst = namespace( sub_total_1 = (ls.work_done or 0) + (ls.variation or 0) + (ls.materials or 0)) %}
+    <tr>
+        <td>4</td>
+        <td colspan="4">Sub Total-1</td>
+        <td colspan="2"></td>
+        <td colspan="2">{{ "{:,.2f}".format(pst.sub_total_1) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(st.sub_total_1) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(pst.sub_total_1 + (st.sub_total_1 or 0)) }}</td>
+    </tr>
+        {% set ad = namespace(
+            advance_payment_total = 0,
+            current_so = None,
+            all_same_so = True,
+            unique_count = 0,
+            last_advance_payment = 0
+        ) %}
+        {% for i in doc.items %}
+            {% if i.sales_order %}
+                {% if not ad.current_so %}
+                    {% set ad.current_so = i.sales_order %}
+                {% elif ad.current_so != i.sales_order %}
+                    {% set ad.all_same_so = False %}
+                {% endif %}
+        
+                {% set so_total = frappe.db.get_value("Sales Order", i.sales_order, "total") or 0 %}
+                {% set advance_percent = frappe.db.get_value("Sales Order", i.sales_order, "advance_percentage") or 0 %}
+                {% set advance_payment = so_total * (advance_percent / 100) %}
+                {% set ad.advance_payment_total = ad.advance_payment_total + advance_payment %}
+        
+                {% set ad.last_advance_payment = advance_payment %}
+            {% endif %}
+        {% endfor %}
+
+
+    
+   <tr>
+    <td>5</td>
+    <td colspan="4">Advance Payment</td>
+    <td colspan="2"></td>
+    <td colspan="2"></td>
+
+    {% if ad.all_same_so %}
+        <td colspan="2">{{ "{:,.2f}".format(ad.last_advance_payment) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(ad.last_advance_payment) }}</td>
+    {% else %}
+        <td colspan="2">{{ "{:,.2f}".format(ad.advance_payment_total) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(ad.advance_payment_total) }}</td>
+    {% endif %}
+
+</tr>
+    {% set t = namespace(advance_tax=0, retention=0, received_retention=0, contra=0, vat=0) %}
+    
+    {% for i in doc.taxes %}
+        {% if i.is_advance == 1 %}
+            {% set t.advance_tax = t.advance_tax + (i.tax_amount or 0) %}
+        {% endif %}
+        {% if i.is_retention == 1 %}
+            {% set t.retention = t.retention + (i.tax_amount or 0) %}
+        {% endif %}
+        {% if i.custom_is_received_retention == 1 %}
+            {% set t.received_retention = t.received_retention + (i.tax_amount or 0) %}
+        {% endif %}
+        {% if i.custom_is_contra == 1 %}
+            {% set t.contra = t.contra + (i.tax_amount or 0) %}
+        {% endif %}
+        {% if i.custom_is_contra ==  0 and i.is_retention == 0 and i.custom_is_contra == 0 and i.custom_is_contra == 0 and i.custom_is_received_retention == 0 %}
+                {% set t.vat = t.vat + (i.tax_amount or 0) %}
+        {% endif %}
+    {% endfor %}
+
+
+    <tr>
+        <td>6</td>
+        <td colspan="4">Less: Advance Payment Recovery</td>
+        <td colspan="2">{{ "%.2f"|format(doc.advance_percentage  or 0)|int }}%</td>
+        <td colspan="2">{{ "{:,.2f}".format(-pt.advance_tax or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(-t.advance_tax or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format((-pt.advance_tax or 0) + (-t.advance_tax or 0)) }}</td>
+    </tr>
+    
+    <tr>
+        <td>7</td>
+        <td colspan="4">Less: Retention</td>
+        <td colspan="2">{{ actual_retention_percent |int}}%</td>
+        <td colspan="2">{{ "{:,.2f}".format(-pt.retention or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(-t.retention or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format((-pt.retention or 0) + (-t.retention or 0)) }}</td>
+    </tr>
+    
+    <tr>
+        <td>8</td>
+        <td colspan="4">Add: Retention</td>
+        <td colspan="2">{{ "%.2f"|format(doc.received_retention_rate)|int }}%</td>
+        <td colspan="2">{{ "{:,.2f}".format(pt.received_retention or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(t.received_retention or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(pt.received_retention or 0 + t.received_retention or 0) }}</td>
+    </tr>
+    
+
+    
+    <tr>
+        <td>9</td>
+        <td colspan="4">Less: Deductions/Contra Charges</td>
+        <td colspan="2"></td>
+        <td colspan="2">{{ "{:,.2f}".format(pt.contra or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(t.contra or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(pt.contra + t.contra) }}</td>
+    </tr>
+    {% if ad.all_same_so %}
+        {% set advance_payment_used = ad.last_advance_payment %}
+    {% else %}
+        {% set advance_payment_used = ad.advance_payment_total %}
+    {% endif %}
+    
+    {% set ts = namespace(
+        sub_total_2 = st.sub_total_1 
+                     + (advance_payment_used or 0)
+                     + (-t.advance_tax or 0)
+                     + (-t.retention or 0)
+                     + (t.received_retention or 0)
+                     + (t.contra or 0)
+    ) %}
+    {% set pts = namespace(
+        sub_total_2 = pst.sub_total_1 
+                    
+                     + (-pt.advance_tax or 0)
+                     + (-pt.retention or 0)
+                     + (pt.received_retention or 0)
+                     + (pt.contra or 0)
+    ) %}
+
+    <tr>
+        <td>10</td>
+        <td colspan="4">Sub Total-2</td>
+        <td colspan="2"></td>
+        <td colspan="2">{{ "{:,.2f}".format(pts.sub_total_2) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(ts.sub_total_2) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(pts.sub_total_2 + ts.sub_total_2) }}</td>
+    </tr>
+    {% set a = namespace(vat=0) %}
+        {% for i in doc.taxes %}
+            
+        {% endfor %}
+    <tr>
+        <td>11</td>
+        <td colspan="4">Add: VAT</td>
+        <td colspan="2"></td>
+        <td colspan="2">{{ "{:,.2f}".format(-pt.vat or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(-t.vat or 0) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format((-pt.vat or 0) + (-t.vat or 0) )}}</td>
+    </tr>
+    {% set ta = namespace(total = (ts.sub_total_2 or 0)+ (-t.vat or 0) )%}
+    {% set amt = namespace(total = (pts.sub_total_2 or 0)+ (-pt.vat or 0) )%}
+    <tr>
+        <td>12</td>
+        <td colspan="4">Total Amount</td>
+        <td colspan="2"></td>
+        <td colspan="2">{{ "{:,.2f}".format(amt.total) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(ta.total) }}</td>
+        <td colspan="2">{{ "{:,.2f}".format(amt.total + ta.total) }}</td>
+    </tr>
+</table>
+
+<p class="bold">Amount in words: {{ frappe.utils.money_in_words(ta.total or 0) }}</p>
+<br/>
+<p>This is for your kind approval and further proceedings.</p>
+<p>For And Behalf Of,</p>
+<p class="bold">M/s GCS German Concrete Works and Building Contracting L.L.C</p>
+<br>
+<div style="padding-left:10px">
+    <p>PO Box. 29030</p>
+    <p>Dubai, UAE</p>
+    <p>Tel: +971 4 884 7454, Fax: +971 4 884 7545</p>
+    <p>Tax Registration Number: 100253830200003</p>
+</div>

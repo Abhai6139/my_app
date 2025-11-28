@@ -26,11 +26,9 @@ def testfrappe():
 	return "data passed"
 
 @frappe.whitelist()
-def view_info( name, emp_name, design, ):
+def view_info( name):
 	if name:
 		doc = frappe.get_doc('Employee', name)
-	else:
-		doc = frappe.get_doc(doctype)
 	return {
 		'emp_name':doc.employee_name,
 		'design':doc.designation,
@@ -38,13 +36,30 @@ def view_info( name, emp_name, design, ):
 	}
 
 @frappe.whitelist()
-def view_doc( name, emp_name, design, employee):
+def view_doc( name):
 	if name:
 		doc = frappe.get_doc('Employee', name)
-	else:
-		doc = frappe.get_doc(doctype)
+	
 	return {
 		'emp_name':doc.employee_name,
 		'design':doc.designation,
 		'employee':doc.employee
 	}
+@frappe.whitelist()
+def get_child(name):
+	doc=frappe.get_doc('Doc Templates',name)
+	return [row.as_dict() for row in doc.documents]
+
+@frappe.whitelist()
+def get_employees(department=None, branch=None, company=None):
+	filters = []
+	if company:
+		filters.append(["company", "=", company])
+	if department:
+		filters.append(["department", "=", department])
+	if branch:
+		filters.append(["branch", "=", branch])
+	return frappe.get_all("Employee",
+		filters=filters,
+		fields=["name", "department", "branch"]
+	)

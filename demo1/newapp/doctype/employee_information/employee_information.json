@@ -11,26 +11,48 @@
   "employee_name",
   "designation",
   "date_of_birth",
+  "age",
   "gender",
   "column_break_7wpf",
   "company",
+  "department",
+  "branch",
   "posting_date",
   "status",
   "first_hour",
   "second_hour",
   "third_hour",
   "document_details_section",
-  "details",
+  "moredetail",
+  "get_details",
+  "detail",
   "fetch_details",
+  "first_value",
+  "second_value",
+  "add",
+  "sub",
+  "mul",
+  "div",
+  "third_value",
+  "hi",
+  "items",
+  "total_amount",
+  "doc_detail",
   "documnt_details1_section",
   "document_details1",
   "section_break_bqup",
   "document_details",
+  "add_detail",
   "additional_details_section",
+  "choose",
+  "attach",
   "reference_doctype",
+  "section_break_7umd",
   "reference_document_name",
   "approvers",
-  "amended_from"
+  "amended_from",
+  "section_break_3msn",
+  "genbar"
  ],
  "fields": [
   {
@@ -107,13 +129,6 @@
    "label": "Document Details"
   },
   {
-   "columns": 2,
-   "fieldname": "details",
-   "fieldtype": "Table",
-   "label": "Details",
-   "options": "Document Details"
-  },
-  {
    "fieldname": "additional_details_section",
    "fieldtype": "Section Break",
    "label": "Additional Details"
@@ -142,7 +157,8 @@
   },
   {
    "fieldname": "section_break_bqup",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Doc"
   },
   {
    "columns": 2,
@@ -176,13 +192,133 @@
    "fieldname": "fetch_details",
    "fieldtype": "Button",
    "label": "Fetch Details"
+  },
+  {
+   "fieldname": "genbar",
+   "fieldtype": "Barcode",
+   "label": "Genbar"
+  },
+  {
+   "fieldname": "attach",
+   "fieldtype": "Attach",
+   "label": "Attach"
+  },
+  {
+   "fieldname": "section_break_3msn",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_7umd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "choose",
+   "fieldtype": "Color",
+   "label": "Choose"
+  },
+  {
+   "fieldname": "add_detail",
+   "fieldtype": "Link",
+   "label": "Add Detail",
+   "options": "Doc Templates"
+  },
+  {
+   "columns": 2,
+   "fieldname": "detail",
+   "fieldtype": "Table",
+   "label": "Detail",
+   "options": "Document Details"
+  },
+  {
+   "fieldname": "hi",
+   "fieldtype": "Tab Break",
+   "label": "Items"
+  },
+  {
+   "fieldname": "doc_detail",
+   "fieldtype": "Tab Break",
+   "label": "Doc Detail"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "Itemz"
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Float",
+   "label": "Total Amount"
+  },
+  {
+   "fieldname": "first_value",
+   "fieldtype": "Int",
+   "label": "First Value"
+  },
+  {
+   "fieldname": "second_value",
+   "fieldtype": "Int",
+   "label": "Second Value"
+  },
+  {
+   "fieldname": "add",
+   "fieldtype": "Button",
+   "label": "Add"
+  },
+  {
+   "fieldname": "sub",
+   "fieldtype": "Button",
+   "label": "Sub"
+  },
+  {
+   "fieldname": "mul",
+   "fieldtype": "Button",
+   "label": "Mul"
+  },
+  {
+   "fieldname": "div",
+   "fieldtype": "Button",
+   "label": "Div"
+  },
+  {
+   "fieldname": "third_value",
+   "fieldtype": "Data",
+   "label": "Third Value"
+  },
+  {
+   "fieldname": "age",
+   "fieldtype": "Data",
+   "label": "Age"
+  },
+  {
+   "fieldname": "moredetail",
+   "fieldtype": "Table",
+   "label": "MoreDetail",
+   "options": "Moredetail"
+  },
+  {
+   "fieldname": "get_details",
+   "fieldtype": "Button",
+   "label": "Get Details"
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-04-09 17:37:29.526378",
+ "modified": "2025-06-26 14:55:44.336807",
  "modified_by": "Administrator",
  "module": "Newapp",
  "name": "Employee Information",

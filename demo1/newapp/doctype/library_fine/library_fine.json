@@ -1,0 +1,79 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{member}-{###}",
+ "creation": "2025-04-29 11:53:40.240848",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_fg8r",
+  "member",
+  "book",
+  "fine_amount",
+  "reference_transaction",
+  "date"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_fg8r",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "book",
+   "fieldtype": "Link",
+   "label": "Book",
+   "options": "Library Book"
+  },
+  {
+   "fieldname": "fine_amount",
+   "fieldtype": "Currency",
+   "label": "Fine Amount",
+   "options": "AED",
+   "precision": "2"
+  },
+  {
+   "fieldname": "reference_transaction",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Reference Transaction"
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "fieldname": "member",
+   "fieldtype": "Link",
+   "label": "Member",
+   "options": "Library Member"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-05-02 14:10:22.762056",
+ "modified_by": "Administrator",
+ "module": "Newapp",
+ "name": "Library Fine",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,123 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-07-30 14:41:29.668162",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "material_type",
+  "materials",
+  "unit",
+  "part",
+  "depletion",
+  "unit_price",
+  "column_break_qinv",
+  "wastage",
+  "thickness",
+  "unit_rate",
+  "rate",
+  "product",
+  "product_name"
+ ],
+ "fields": [
+  {
+   "fieldname": "material_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Material Type",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "materials",
+   "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
+   "label": "Materials",
+   "options": "material_type"
+  },
+  {
+   "fieldname": "depletion",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Depletion"
+  },
+  {
+   "fieldname": "unit",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Unit",
+   "options": "UOM"
+  },
+  {
+   "fieldname": "thickness",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Thickness"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Rate",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.material_type=='Item Group'",
+   "fieldname": "product",
+   "fieldtype": "Link",
+   "label": "Product",
+   "mandatory_depends_on": "eval:doc.material_type=='Item Group'",
+   "options": "Item"
+  },
+  {
+   "depends_on": "eval:doc.material_type=='Item Group'",
+   "fetch_from": "product.item_name",
+   "fieldname": "product_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Product Name"
+  },
+  {
+   "fieldname": "column_break_qinv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "unit_price",
+   "fieldtype": "Float",
+   "label": "Unit Price"
+  },
+  {
+   "fieldname": "part",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "% Part"
+  },
+  {
+   "fieldname": "wastage",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "% Wastage"
+  },
+  {
+   "fieldname": "unit_rate",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Unit Rate",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-07-31 15:41:19.203499",
+ "modified_by": "Administrator",
+ "module": "Newapp",
+ "name": "SCRA Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

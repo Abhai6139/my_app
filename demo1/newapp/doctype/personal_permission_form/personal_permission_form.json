@@ -1,0 +1,164 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "PPF.###",
+ "creation": "2025-06-20 12:09:26.788699",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_uyu5",
+  "amended_from",
+  "employee",
+  "employee_name",
+  "posting_date",
+  "status",
+  "column_break_kpjs",
+  "permission_from_date_and_time",
+  "permission_to_date_and_time",
+  "purpose",
+  "section_break_gmec",
+  "previously_consumed_hours",
+  "column_break_2hvj",
+  "permission_granted_hours",
+  "column_break_kung",
+  "total_monthly_consumed_hours",
+  "section_break_2ndh",
+  "deduction_required"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_uyu5",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Personal Permission Form",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nPending\nApproved\nRejected",
+   "read_only": 1
+  },
+  {
+   "fieldname": "permission_from_date_and_time",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Permission From Date and Time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "permission_to_date_and_time",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Permission To Date and Time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "purpose",
+   "fieldtype": "Small Text",
+   "label": "Purpose"
+  },
+  {
+   "fieldname": "section_break_gmec",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "previously_consumed_hours",
+   "fieldtype": "Float",
+   "label": "Previously Consumed Hours",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_2hvj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "permission_granted_hours",
+   "fieldtype": "Float",
+   "label": "Permission Granted Hours",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_kung",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_monthly_consumed_hours",
+   "fieldtype": "Float",
+   "label": "Total Monthly Consumed Hours",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_2ndh",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "deduction_required",
+   "fieldtype": "Check",
+   "label": "Deduction Required"
+  },
+  {
+   "fieldname": "column_break_kpjs",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-06-20 16:27:38.495707",
+ "modified_by": "Administrator",
+ "module": "Newapp",
+ "name": "Personal Permission Form",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,262 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "QUCK-INV_.###",
+ "creation": "2025-08-13 15:07:39.762166",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_c9fu",
+  "amended_from",
+  "vehicle_id",
+  "make_model",
+  "vehicle_type",
+  "sales_invoice_reference",
+  "column_break_ygrd",
+  "customer",
+  "date",
+  "time",
+  "company",
+  "column_break_ltje",
+  "service_bay",
+  "warehouse",
+  "status",
+  "cashier",
+  "section_break_zuwu",
+  "price_list",
+  "items",
+  "column_break_ilby",
+  "table_total",
+  "discount",
+  "grand_total",
+  "vat",
+  "sub_total",
+  "section_break_datw",
+  "payment_mode",
+  "column_break_djzc",
+  "paid_amount",
+  "change_amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_c9fu",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Quick Invoice",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "vehicle_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Vehicle Id",
+   "options": "Vehicle ID",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "vehicle_id.make_model",
+   "fieldname": "make_model",
+   "fieldtype": "Data",
+   "label": "Make & Model",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "vehicle_id.vehicle_type",
+   "fieldname": "vehicle_type",
+   "fieldtype": "Data",
+   "label": "Vehicle Type",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "sales_invoice_reference",
+   "fieldtype": "Link",
+   "label": "Sales Invoice Reference",
+   "options": "Sales Invoice",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_ygrd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "vehicle_id.customer",
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer",
+   "read_only": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "default": "Now",
+   "fieldname": "time",
+   "fieldtype": "Time",
+   "label": "Time"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "column_break_ltje",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "service_bay",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Service Bay",
+   "options": "Service Bay",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "company.custom_default_warehouse",
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "Draft",
+   "fieldname": "status",
+   "fieldtype": "Data",
+   "label": "Status"
+  },
+  {
+   "default": "user",
+   "fieldname": "cashier",
+   "fieldtype": "Data",
+   "label": "Cashier"
+  },
+  {
+   "fieldname": "section_break_zuwu",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "company.custom_default_price_list",
+   "fieldname": "price_list",
+   "fieldtype": "Link",
+   "label": "Price List",
+   "options": "Price List"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "Itemss"
+  },
+  {
+   "fieldname": "column_break_ilby",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "table_total",
+   "fieldtype": "Currency",
+   "label": "Table Total",
+   "read_only": 1
+  },
+  {
+   "fieldname": "discount",
+   "fieldtype": "Currency",
+   "label": "Discount"
+  },
+  {
+   "fieldname": "grand_total",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Grand Total",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "vat",
+   "fieldtype": "Currency",
+   "label": "vat",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sub_total",
+   "fieldtype": "Currency",
+   "label": "Sub Total",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_datw",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "payment_mode",
+   "fieldtype": "Select",
+   "label": "Payment Mode",
+   "options": "\nCash\nCard",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_djzc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "paid_amount",
+   "fieldtype": "Currency",
+   "label": "Paid Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "change_amount",
+   "fieldtype": "Currency",
+   "label": "Change Amount",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [
+  {
+   "link_doctype": "Sales Invoice",
+   "link_fieldname": "custom_quick_invoice"
+  }
+ ],
+ "modified": "2025-08-19 12:35:33.687630",
+ "modified_by": "Administrator",
+ "module": "Newapp",
+ "name": "Quick Invoice",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

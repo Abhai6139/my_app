@@ -1,0 +1,95 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{mix_design_type}",
+ "creation": "2025-07-28 15:53:32.436301",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_zdxl",
+  "amended_from",
+  "mix_design_type",
+  "scope_of_works",
+  "column_break_utfx",
+  "date",
+  "section_break_wwqc",
+  "mix_design_details"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_zdxl",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Mix Design",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "mix_design_type",
+   "fieldtype": "Link",
+   "label": "Mix Design Type",
+   "options": "Mix Design Type"
+  },
+  {
+   "fieldname": "scope_of_works",
+   "fieldtype": "Link",
+   "label": "Scope of Works",
+   "options": "Scope Of Works"
+  },
+  {
+   "fieldname": "column_break_utfx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "fieldname": "section_break_wwqc",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "mix_design_details",
+   "fieldtype": "Table",
+   "label": "Mix Design Details",
+   "options": "Mix Design Details"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-07-31 18:08:04.140086",
+ "modified_by": "Administrator",
+ "module": "Newapp",
+ "name": "Mix Design",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

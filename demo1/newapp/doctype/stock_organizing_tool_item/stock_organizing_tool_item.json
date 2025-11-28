@@ -1,0 +1,58 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-07-16 15:00:29.481900",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "serial_no",
+  "box",
+  "shelf_or_trolley",
+  "shelftrolley"
+ ],
+ "fields": [
+  {
+   "fieldname": "serial_no",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Serial No",
+   "options": "Serial No"
+  },
+  {
+   "fieldname": "box",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Box",
+   "options": "Box"
+  },
+  {
+   "fieldname": "shelf_or_trolley",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Shelf or Trolley",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "shelftrolley",
+   "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
+   "label": "Shelf/Trolley",
+   "options": "shelf_or_trolley"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-07-16 15:38:15.467410",
+ "modified_by": "Administrator",
+ "module": "Newapp",
+ "name": "Stock Organizing Tool Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

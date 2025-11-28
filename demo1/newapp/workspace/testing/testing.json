@@ -1,0 +1,37 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"RdKxP8vBmf\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Testing</span>\",\"col\":12}},{\"id\":\"Ig-b_K8gKQ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}}]",
+ "creation": "2025-05-28 11:19:25.204528",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "text",
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "Testing",
+ "links": [],
+ "modified": "2025-05-28 11:23:49.546124",
+ "modified_by": "Administrator",
+ "module": "Newapp",
+ "name": "Testing",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "Home",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 39.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Dashboard",
+   "link_to": "Demo Dashboard",
+   "type": "Dashboard"
+  }
+ ],
+ "title": "Testing"
+}

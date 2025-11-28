@@ -1,0 +1,143 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-07-16 15:08:14.622171",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_g0dg",
+  "amended_from",
+  "serial_no",
+  "column_break_qpdn",
+  "box_shelf_trolley",
+  "column_break_b2wh",
+  "boxshelftrolley",
+  "section_break_eepf",
+  "items",
+  "section_break_aywt",
+  "box_barcode",
+  "box",
+  "column_break_yyfd",
+  "shelf_or_trolley_barcode",
+  "shelf_or_trolley",
+  "shelftrolley"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_g0dg",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Stock Organizing Tool",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "serial_no",
+   "fieldtype": "Data",
+   "label": "Serial No",
+   "options": "Barcode"
+  },
+  {
+   "fieldname": "box_shelf_trolley",
+   "fieldtype": "Link",
+   "label": "Box or Shelf or Trolley",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "Stock Organizing Tool Item"
+  },
+  {
+   "fieldname": "boxshelftrolley",
+   "fieldtype": "Dynamic Link",
+   "label": "Box/Shelf/Trolley",
+   "options": "box_shelf_trolley"
+  },
+  {
+   "fieldname": "box_barcode",
+   "fieldtype": "Data",
+   "label": "Box Barcode",
+   "options": "Barcode"
+  },
+  {
+   "fieldname": "box",
+   "fieldtype": "Link",
+   "label": "Box",
+   "options": "Box"
+  },
+  {
+   "fieldname": "shelf_or_trolley_barcode",
+   "fieldtype": "Data",
+   "label": "Shelf or Trolley Barcode",
+   "options": "Barcode"
+  },
+  {
+   "fieldname": "shelf_or_trolley",
+   "fieldtype": "Link",
+   "label": "Shelf or Trolley",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "shelftrolley",
+   "fieldtype": "Dynamic Link",
+   "label": "Shelf/Trolley",
+   "options": "shelf_or_trolley"
+  },
+  {
+   "fieldname": "column_break_qpdn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_b2wh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_eepf",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_yyfd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_aywt",
+   "fieldtype": "Section Break"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-07-17 11:20:06.144131",
+ "modified_by": "Administrator",
+ "module": "Newapp",
+ "name": "Stock Organizing Tool",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

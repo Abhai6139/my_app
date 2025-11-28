@@ -1,0 +1,53 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-05-02 12:38:13.568511",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_sot7",
+  "book",
+  "fine_amount",
+  "fine_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_sot7",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "book",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Book",
+   "options": "Library Book"
+  },
+  {
+   "fieldname": "fine_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Fine Amount"
+  },
+  {
+   "fieldname": "fine_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Fine Date"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-05-02 14:40:32.006718",
+ "modified_by": "Administrator",
+ "module": "Newapp",
+ "name": "Library Fine Summary",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

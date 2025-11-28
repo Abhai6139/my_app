@@ -1,0 +1,75 @@
+<style>
+	.print-format {
+		padding: 4mm;
+		font-size: 8.0pt !important;
+	}
+	.print-format td {
+		vertical-align:middle !important;
+	}
+	</style>
+
+	<h2 class="" style="margin-top:0">STATEMENT OF ACCOUNT</h2>
+	<h4 class="">Statement Date: {%= frappe.datetime.str_to_user(filters.report_date) %}	</h4>
+	<table style="width:100%; border-collapse:collapse; border:1px solid black; text-align:left; font-size:14px;">
+        <tr>
+            <td  style="border:1px solid black; padding:8px; width:50%; background:#f2f2f2;"><b>From:</b></td>
+            <td  style="border:1px solid black; padding:8px; width:50%; background:#f2f2f2;"><b>To:</b></td>
+        </tr>
+        <tr>
+            <td  style="border:1px solid black; padding:8px;">Umm Al Quwain Marine Club</td>
+            <td  style="border:1px solid black; padding:8px;">Customer:</td>
+        </tr>
+        <tr>
+            <td style="border:1px solid black; padding:8px; width:10%;">TRN:100523493300003</td>
+            <td style="border:1px solid black; padding:8px; width:10%;">TRN:</td>
+        </tr>
+        <tr>
+            <td style="border:1px solid black; padding:8px;">Address: PO Box 624 Umm Al Quwain, UAE</td>
+            <td style="border:1px solid black; padding:8px;">Address:</td>
+        </tr>
+        <tr>
+            <td style="border:1px solid black; padding:8px;">Tel.: +971 6 766 6644</td>
+            <td style="border:1px solid black; padding:8px;">Tel.:</td>
+        </tr>
+        <tr>
+            <td style="border:1px solid black; padding:8px;">E-mail: qaiser.khan@uaqmarineclub.com</td>
+            <td style="border:1px solid black; padding:8px;">E-mail:</td>
+        </tr>
+    </table>
+
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+                <th style="width: 10%">#</th>
+                <th style="width: 10%">Date</th>
+                <th style="width: 14%">Document No</th>
+                <th style="width: 40%">Description</th>
+                <th style="width: 15%">Debit, AED</th>
+                <th style="width: 15%">Credit, AED</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for(var i=0, l=data.length; i<l; i++) { %}
+				<tr>
+				{% if(report.report_name === "Accounts Receivables" || report.report_name === "Accounts Payables") { %}
+					{% if(data[i]["party"]) { %}
+                        <td></td>
+						<td>{%= frappe.datetime.str_to_user(data[i]["posting_date"]) %}</td>
+						<td >{%= data[i]["voucher_no"] %}</td>
+						<td>
+							{% if(!filters.show_future_payments) { %}
+								{%= data[i]["voucher_type"] %}
+								<br>
+							{% } %}
+							{%= data[i]["voucher_no"] %}
+						</td>
+						
+						<td style="text-align: right">{%= format_currency(data[i]["paid"], data[i]["currency"]) %}</td>
+						<td style="text-align: right">{%= format_currency(data[i]["credit_note"], data[i]["currency"]) %}</td>
+					{% } %}
+				{% } %}
+				</tr>
+			{% } %}
+		</tbody>
+	</table>
+	<p class="text-right text-muted">{%= __("Printed on {0}", [frappe.datetime.str_to_user(frappe.datetime.get_datetime_as_string())]) %}</p>

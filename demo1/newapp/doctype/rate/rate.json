@@ -1,0 +1,78 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:RM-{####}",
+ "creation": "2025-08-20 10:19:25.526838",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_gfr3",
+  "amended_from",
+  "scope_of_work",
+  "area_type",
+  "details"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_gfr3",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Rate",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "scope_of_work",
+   "fieldtype": "Link",
+   "label": "Scope Of Work",
+   "options": "Scope Of Works"
+  },
+  {
+   "fieldname": "area_type",
+   "fieldtype": "Select",
+   "label": "Area Type",
+   "options": "\nDry\nWet"
+  },
+  {
+   "fieldname": "details",
+   "fieldtype": "Table",
+   "label": "Details",
+   "options": "Rate Details"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-08-20 10:21:46.528827",
+ "modified_by": "Administrator",
+ "module": "Newapp",
+ "name": "Rate",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

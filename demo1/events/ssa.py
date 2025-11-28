@@ -1,0 +1,2 @@
+def validate(self,method=None):
+    self.custom_gross_salary=self.custom_basic+self.custom_hra+self.custom_other_allowance+self.custom_transport_allowance+self.custom_food_allowance+self.custom_fixed_allowance

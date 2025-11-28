@@ -1,0 +1,51 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{minimum_thickness}-{maximum_thickness}mm",
+ "creation": "2025-07-31 18:12:42.921223",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "minimum_thickness",
+  "maximum_thickness"
+ ],
+ "fields": [
+  {
+   "fieldname": "minimum_thickness",
+   "fieldtype": "Int",
+   "label": "Minimum Thickness(mm)"
+  },
+  {
+   "fieldname": "maximum_thickness",
+   "fieldtype": "Int",
+   "label": "Maximum Thickness(mm)"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-07-31 18:15:24.974594",
+ "modified_by": "Administrator",
+ "module": "Newapp",
+ "name": "Thickness",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
